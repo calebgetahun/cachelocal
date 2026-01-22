@@ -132,6 +132,8 @@ class LRUCache(Cache[K, V]):
 
             if self._is_expired(node, now):
                 self._delete_node(key, node)
+                if self._track_stats:
+                    self._stats.misses += 1
                 return None
 
             self._move_to_front(node)
@@ -181,6 +183,9 @@ class LRUCache(Cache[K, V]):
             self.cache.clear()
             self.head.next = self.tail
             self.tail.prev = self.head
+
+            if self._track_stats:
+                self._stats = CacheStats()
 
     def __len__(self) -> int:
         with self._lock:
