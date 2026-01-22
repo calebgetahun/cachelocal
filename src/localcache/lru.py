@@ -1,22 +1,24 @@
 from __future__ import annotations
 import time
 from threading import Lock
-from typing import Dict, Optional, TypeVar, Generic, Hashable
+from typing import Dict, Hashable, Optional, TypeVar
 
 from .base import Cache
 from .dll import DLLNode
+from .stats import CacheStats
 
 K = TypeVar("K", bound=Hashable)
 V = TypeVar("V")
     
-class LRUCache(Cache[K, V], Generic[K, V]):
+class LRUCache(Cache[K, V]):
     """
-    Simple in-memory LRU cache with O(1) get/set.
+    Simple in-memory LRU cache with O(1) get/set
+
     Doubly linked list + hashmap implementation
 
-    - Thread-safe via a single lock guarding the hashmap and linked list.
+    Thread-safe via a single lock guarding the hashmap and linked list
     """
-    def __init__(self, capacity: int):
+    def __init__(self, capacity: int, track_stats: bool = False):
         if capacity <= 0:
             raise ValueError("LRUCache capacity must be > 0")
     
@@ -30,6 +32,8 @@ class LRUCache(Cache[K, V], Generic[K, V]):
         self.tail.prev = self.head
 
         self._lock = Lock()
+        self._track_stats = track_stats
+        self._stats = CacheStats() if track_stats else None
 
     def _add_to_front(self, node: DLLNode[K, V]) -> None:
         """Insert node at front of list after head node"""
@@ -120,6 +124,8 @@ class LRUCache(Cache[K, V], Generic[K, V]):
             node = self.cache.get(key)
 
             if node is None:
+                if self._track_stats:
+                    self._stats.misses += 1
                 return None
             
             now = time.monotonic()
@@ -129,6 +135,9 @@ class LRUCache(Cache[K, V], Generic[K, V]):
                 return None
 
             self._move_to_front(node)
+
+            if self._track_stats:
+                self._stats.hits += 1
             return node.val
     
     def set(self, key: K, value: V, ttl_seconds: Optional[float] = None) -> None:
@@ -149,6 +158,8 @@ class LRUCache(Cache[K, V], Generic[K, V]):
 
             if len(self.cache) > self.capacity:
                 self._evict_one(now)
+                if self._track_stats:
+                    self._stats.evictions += 1
         
     def delete(self, key: K) -> bool:
         """
@@ -174,4 +185,14 @@ class LRUCache(Cache[K, V], Generic[K, V]):
     def __len__(self) -> int:
         with self._lock:
             return len(self.cache)
+        
+    def get_stats(self) -> CacheStats:
+        if not self._track_stats:
+            return CacheStats()
+        
+        return CacheStats(
+            hits=self._stats.hits,
+            misses=self._stats.misses,
+            evictions=self._stats.evictions
+        )
     
