@@ -4,7 +4,7 @@ from localcache import LRUCache
 
 @pytest.fixture
 def cache():
-    return LRUCache(capacity=2)
+    return LRUCache(capacity=2, track_stats=True)
 
 def test_get_missing(cache):
     assert cache.get("x") is None
@@ -55,3 +55,18 @@ def test_set_prefers_evicted_expired(cache):
     assert cache.get("a") is None
     assert cache.get("b") == 2
     assert cache.get("c") == 3
+
+def test_stats(cache):
+    cache.set("a", 1)
+    cache.set("b", 2)
+    cache.set("c", 3)
+
+    cache.get("a")
+    cache.get("b")
+    cache.get("d")
+
+    stats = cache.get_stats()
+
+    assert stats.hits == 1
+    assert stats.misses == 2
+    assert stats.evictions == 1
