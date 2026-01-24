@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "localcache"
+name = "cachelocal"
 version = "0.2.0"
 description = "Thread-safe in-process cache for Python with eviction policies and TTL"
 readme = "README.md"
@@ -25,9 +25,9 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/calebgetahun/localcache"
-Repository = "https://github.com/calebgetahun/localcache"
-Issues = "https://github.com/calebgetahun/localcache/issues"
+Homepage = "https://github.com/calebgetahun/cachelocal"
+Repository = "https://github.com/calebgetahun/cachelocal"
+Issues = "https://github.com/calebgetahun/cachelocal/issues"
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov"]

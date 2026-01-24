@@ -4,7 +4,7 @@ Simple benchmarks for cache implementations.
 """
 import time
 from functools import lru_cache
-from localcache import LRUCache, FIFOCache
+from cachelocal import LRUCache, FIFOCache
 
 def benchmark_cache(cache_factory, name: str, operations: int = 100_000):
     """Benchmark a cache implementation."""

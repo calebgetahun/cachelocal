@@ -1,6 +1,6 @@
 import time
 import pytest
-from localcache import LRUCache
+from cachelocal import LRUCache
 
 @pytest.fixture
 def cache():

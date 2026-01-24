@@ -1,6 +1,6 @@
 import time
 import pytest
-from localcache import FIFOCache
+from cachelocal import FIFOCache
 
 @pytest.fixture
 def cache():

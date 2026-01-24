@@ -1,4 +1,4 @@
-# localcache
+# cachelocal
 
 A thread-safe in-process cache for Python with multiple eviction policies and optional TTL support.
 
@@ -13,7 +13,7 @@ A thread-safe in-process cache for Python with multiple eviction policies and op
 ## Installation
 
 ```bash
-pip install localcache
+pip install cachelocal
 ```
 
 ## Quickstart
@@ -21,7 +21,7 @@ pip install localcache
 ### LRU Cache
 
 ```python
-from localcache import LRUCache
+from cachelocal import LRUCache
 
 cache = LRUCache(capacity=2)
 
@@ -37,7 +37,7 @@ cache.get("b")          # -> None
 ### FIFO Cache
 
 ```python
-from localcache import FIFOCache
+from cachelocal import FIFOCache
 
 cache = FIFOCache(capacity=2)
 
