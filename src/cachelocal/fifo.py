@@ -14,7 +14,8 @@ class FIFOCache(Cache[K, V]):
     """
     Simple in-memory FIFO cache with O(1) get/set.
 
-    Doubly linked list + hashmap implementation
+    Doubly linked list + hashmap implementation.
+    Evicts by insertion order (oldest first), regardless of access pattern.
 
     Thread-safe via a single lock guarding the hashmap and linked list.
     """
