@@ -4,7 +4,7 @@ Simple benchmarks for cache implementations.
 """
 import time
 from functools import lru_cache
-from cachelocal import LRUCache, FIFOCache
+from cachelocal import LRUCache, FIFOCache, LFUCache
 
 def benchmark_cache(cache_factory, name: str, operations: int = 100_000):
     """Benchmark a cache implementation."""
@@ -119,7 +119,21 @@ if __name__ == "__main__":
         "FIFOCache (stats=False)",
         operations
     )
-    
+
+    # LFU with stats
+    benchmark_cache(
+        lambda: LFUCache(capacity=1000, track_stats=True),
+        "LFUCache (stats=True)",
+        operations
+    )
+
+    # LFU without stats
+    benchmark_cache(
+        lambda: LFUCache(capacity=1000, track_stats=False),
+        "LFUCache (stats=False)",
+        operations
+    )
+
     # Read-only comparison
     print("\n" + "=" * 60)
     print("Read-Only Comparison (vs functools.lru_cache)")
@@ -137,7 +151,13 @@ if __name__ == "__main__":
         "FIFOCache (stats=False)",
         operations
     )
-    
+
+    benchmark_cache_readonly(
+        lambda: LFUCache(capacity=1000, track_stats=False),
+        "LFUCache (stats=False)",
+        operations
+    )
+
     benchmark_functools_lru(operations)
     
     print("\n" + "=" * 60)
